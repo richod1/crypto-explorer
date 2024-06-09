@@ -19,7 +19,7 @@ app.use(bodyParser())
 app.use(serve(path.join(__dirname,'template'),{extensions:['html']}))
 
 
-app.use(router.routes().use(router.allowedMethods()));
+app.use(router.routes()).use(router.allowedMethods());
 
 app.listen(port,()=>{
     console.log(`server is up on port: ${port}`)
