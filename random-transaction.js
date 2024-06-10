@@ -1,4 +1,4 @@
-const { timeStamp } = require("node:console");
+
 const crypto=require("node:crypto")
 
 // generating hex
@@ -71,7 +71,8 @@ const generateTransaction=()=>{
         if(AmountForThisAddress>0){
             outputs.push({address:generateAddress(),amount:AmountForThisAddress});
             remainingAmount-=AmountForThisAddress;
-        }
+        } 
+    }
         outputs.forEach(output=>{
             spentOutput.set(txid,{address:output.address,amount:output.amount})
         })
@@ -79,5 +80,30 @@ const generateTransaction=()=>{
         return{
             txid,timeStamp:generateTimestamp(),inputs,outputs
         }
-    }
+
 }
+
+
+const generateTransactions=(numTransactions)=>{
+    const transactions=[];
+    for(let i=0;i<numTransactions;i++){
+        if(i%20===0||i===0){
+            const coinBaseTx=createCoinbaseTransaction();
+            transactions.push(coinBaseTx);
+
+
+            coinBaseTx.outputs.forEach(output=>{
+                spentOutput.set(coinBaseTx.txid,{address:output.address,amount:output.amount})
+            })
+        }else{
+            const transaction=generateTransaction();
+            if(transaction) transaction.push(transaction);
+        }
+        
+    }
+    return transactions;
+}
+
+
+const numTransactions=200;
+console.log(JSON.stringify(generateTransactions(numTransactions)));
